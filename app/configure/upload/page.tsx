@@ -42,8 +42,6 @@ const Page = () => {
   const onDropAccepted = (acceptedFiles: File[]) => {
     startUpload(acceptedFiles, { configId: undefined });
 
-    console.log("acceptedFiles")
-
     setIsDragOver(false);
   };
 

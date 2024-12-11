@@ -13,11 +13,16 @@ import { useMutation } from '@tanstack/react-query';
 import { createCheckoutSession } from '@/app/configure/preview/actions';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import LoginModal from './LoginModal';
 
 const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const { id } = configuration;
+  const { user } = useKindeBrowserClient();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
 
   useEffect(() => setShowConfetti(true));
 
@@ -54,6 +59,15 @@ const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
     }
   })
 
+  const handleCheckout = () => {
+    if (user) {
+      createPaymentSession({configId: id})
+    } else {
+      localStorage.setItem("configurationId", id)
+      setIsLoginModalOpen(true)
+    }
+  };
+
   return (
     <>
       <div
@@ -68,6 +82,7 @@ const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
           }}
         />
       </div>
+      <LoginModal isOpen={isLoginModalOpen} setIsOpen={setIsLoginModalOpen}/>
       <div className="mt-20 grid grid-cols-1 text-sm sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6 md:gap-x-8 lg:gap-x-12">
         <div className="sm:col-span-4 md:col-span-3 md:row-span-2 md:row-end-2">
           <Phone
@@ -141,7 +156,7 @@ const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
               </div>
             </div>
             <div className="mt-8 flex justify-end pb-12">
-              <Button onClick={() => createPaymentSession({configId: configuration.id})} className="px-4 sm:px-6 lg:px-8">
+              <Button onClick={() => handleCheckout()} className="px-4 sm:px-6 lg:px-8">
                 Check out <ArrowRightIcon className="size-4 ml-1.5 inline" />
               </Button>
             </div>

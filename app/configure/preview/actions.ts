@@ -28,10 +28,10 @@ export const createCheckoutSession = async ({ configId }: {configId: string }) =
   let price = BASE_PRICE;
 
   if (finish === 'textured') {
-    price += PRODUCT_PRICES.finish.textured / 100;
+    price += PRODUCT_PRICES.finish.textured;
   }
   if (material === 'polycarbonate') {
-    price += PRODUCT_PRICES.material.polycarbonate / 100;
+    price += PRODUCT_PRICES.material.polycarbonate;
   }
 
   let order: Order | undefined = undefined;
